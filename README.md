@@ -1,6 +1,6 @@
-# Zeiterfassung – App (iOS & Android)
+# Zeiterfassung – App (Android)
 
-Flutter-App für das Zeiterfassungssystem. Sie enthält alle Funktionen des Webpanels und spricht ausschließlich über die
+Flutter-App (Android/Samsung) für das Zeiterfassungssystem. Sie enthält alle Funktionen des Webpanels und spricht ausschließlich über die
 REST-API (`<Server>/api/index.php`) mit dem Webpanel. Was jemand sieht und darf, bestimmt die Rolle im Webpanel – die App
 baut ihr Menü aus den Rechten, die der Server liefert, und der Server prüft jede Aktion erneut.
 
@@ -50,15 +50,10 @@ flutter run                       # Gerät/Emulator
   (zum Installieren auf eigenen Geräten ok). Für den Play Store einen Upload-Key anlegen und in
   `android/app/build.gradle.kts` unter `signingConfigs` eintragen
   ([Anleitung](https://docs.flutter.dev/deployment/android#sign-the-app)).
-* **iOS:** erfordert einen Mac mit Xcode und einen Apple-Developer-Account (99 USD/Jahr). Bundle-ID
-  `at.gamingcommunity.zeiterfassung` in Xcode (`ios/Runner.xcworkspace`) mit dem eigenen Team signieren, dann
-  `flutter build ipa` und über Xcode/Transporter in TestFlight hochladen. Ohne Mac: GitHub Actions (macOS) – der Workflow
-  baut unsigniert zur Kontrolle; für signierte Builds Zertifikat und Provisioning-Profil als GitHub-Secrets hinterlegen.
 
 ### GitHub Actions
 
-`.github/workflows/build.yml` prüft bei jedem Push (analyze + Tests), baut die Android-APK/AAB und die iOS-App
-(unsigniert) und legt sie als Artefakte ab. Ein Tag `v1.0.0` erzeugt zusätzlich ein GitHub-Release mit der APK.
+`.github/workflows/build.yml` prüft bei jedem Push (analyze + Tests), baut die Android-APK/AAB und legt sie als Artefakte ab. Ein Tag `v1.0.0` erzeugt zusätzlich ein GitHub-Release mit der APK.
 
 ## Version
 
@@ -81,19 +76,16 @@ test          Oberflächen-Tests (simulierte API) und Integrationstest (echter S
 2. Antippen → beim ersten Mal „Installation aus dieser Quelle zulassen“ bestätigen → *Installieren*.
 3. App „Zeiterfassung“ öffnen, Server-Adresse prüfen, mit Personalnummer anmelden.
 
-**iPhone**
-Apple erlaubt keine Installation von Dateien. Weg: Apple-Developer-Account (99 USD/Jahr) → App in *TestFlight* hochladen
-(`flutter build ipa`, Upload mit Xcode/Transporter) → Mitarbeiter bekommen einen Einladungslink, installieren *TestFlight*
-und darüber die App. Updates kommen dort automatisch.
+Die App ist nur für Android (Samsung & Co.) vorgesehen; eine iPhone-Version ist nicht eingeplant.
 
 ## Updates der App
 
 * Neue Version: `version:` in `pubspec.yaml` erhöhen, committen, Tag setzen (`git tag v1.1.0 && git push --tags`) – der
-  Workflow baut APK/AAB/iOS und legt die APK als GitHub-Release ab.
+  Workflow baut APK/AAB und legt die APK als GitHub-Release ab.
 * Der Server liest das neueste GitHub-Release selbst: In der `.env` des **Webpanels** einmalig `APP_GITHUB_REPO=Besitzer/Zeiterfassung-App` eintragen.
   Danach meldet das Webpanel jede neue Version (Tag `v1.1.0`) samt APK-Link automatisch (Abfrage höchstens stündlich) – nichts mehr von Hand ändern.
   Die App zeigt auf der Übersicht „Neue App-Version verfügbar“; Antippen öffnet den Download.
-* Optional: `APP_IOS_URL` (TestFlight-/App-Store-Link, gilt für alle iPhone-Versionen) und `APP_MIN_VERSION` (ältere Versionen = „Update erforderlich“).
+* Optional: `APP_MIN_VERSION` (ältere Versionen = „Update erforderlich“).
 * Android: Die neue APK muss mit **demselben Schlüssel** signiert sein wie die installierte, sonst lässt sie sich nicht
   darüber installieren – den Release-Schlüssel (Keystore) deshalb sicher aufbewahren und von Anfang an verwenden
-  (siehe „Bauen“). iPhone-Updates laufen über TestFlight/App Store.
+  (siehe „Bauen“).

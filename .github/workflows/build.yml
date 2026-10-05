@@ -51,23 +51,3 @@ jobs:
         with:
           files: build/app/outputs/flutter-apk/app-release.apk
           generate_release_notes: true
-
-  ios:
-    needs: test
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-      - run: flutter pub get
-      # Ohne Apple-Zertifikat: nur Übersetzungs-Test. Für TestFlight/App Store siehe README (Signierung).
-      - run: flutter build ios --release --no-codesign --build-number=${{ github.run_number }}
-      - run: |
-          cd build/ios/iphoneos
-          zip -qr ../../../Runner-unsigned.zip Runner.app
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ios-unsigned
-          path: Runner-unsigned.zip

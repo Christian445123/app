@@ -90,9 +90,10 @@ und darüber die App. Updates kommen dort automatisch.
 
 * Neue Version: `version:` in `pubspec.yaml` erhöhen, committen, Tag setzen (`git tag v1.1.0 && git push --tags`) – der
   Workflow baut APK/AAB/iOS und legt die APK als GitHub-Release ab.
-* Danach in der `.env` des **Webpanels** `APP_LATEST_VERSION=1.1.0` und `APP_ANDROID_URL=<Link zur APK>`
-  (bzw. `APP_IOS_URL=<TestFlight-Link>`) eintragen. Die App zeigt auf der Übersicht „Neue App-Version verfügbar“; Antippen
-  öffnet den Download. `APP_MIN_VERSION` markiert ältere Versionen als „Update erforderlich“.
+* Der Server liest das neueste GitHub-Release selbst: In der `.env` des **Webpanels** einmalig `APP_GITHUB_REPO=Besitzer/Zeiterfassung-App` eintragen.
+  Danach meldet das Webpanel jede neue Version (Tag `v1.1.0`) samt APK-Link automatisch (Abfrage höchstens stündlich) – nichts mehr von Hand ändern.
+  Die App zeigt auf der Übersicht „Neue App-Version verfügbar“; Antippen öffnet den Download.
+* Optional: `APP_IOS_URL` (TestFlight-/App-Store-Link, gilt für alle iPhone-Versionen) und `APP_MIN_VERSION` (ältere Versionen = „Update erforderlich“).
 * Android: Die neue APK muss mit **demselben Schlüssel** signiert sein wie die installierte, sonst lässt sie sich nicht
   darüber installieren – den Release-Schlüssel (Keystore) deshalb sicher aufbewahren und von Anfang an verwenden
   (siehe „Bauen“). iPhone-Updates laufen über TestFlight/App Store.

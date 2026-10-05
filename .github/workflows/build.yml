@@ -37,6 +37,24 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      - name: Release-Schlüssel einrichten
+        env:
+          KS: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KS" ]; then
+            echo "$KS" | base64 -d > android/upload-keystore.p12
+            {
+              echo "storeFile=upload-keystore.p12"
+              echo "storePassword=$KS_PASS"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "keyPassword=$KEY_PASS"
+            } > android/key.properties
+          else
+            echo "::warning::Kein Release-Schlüssel hinterlegt – APK wird mit Debug-Schlüssel signiert (Updates nicht möglich)."
+          fi
       # Build-Nummer = fortlaufende Nummer des Workflow-Laufs, damit jede APK installierbar/aktualisierbar ist
       - run: flutter build apk --release --build-number=${{ github.run_number }}
       - run: flutter build appbundle --release --build-number=${{ github.run_number }}

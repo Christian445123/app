@@ -89,3 +89,11 @@ Die App ist nur für Android (Samsung & Co.) vorgesehen; eine iPhone-Version ist
 * Android: Die neue APK muss mit **demselben Schlüssel** signiert sein wie die installierte, sonst lässt sie sich nicht
   darüber installieren – den Release-Schlüssel (Keystore) deshalb sicher aufbewahren und von Anfang an verwenden
   (siehe „Bauen“).
+
+## Signierschlüssel (wichtig für Updates)
+
+Die APK muss immer mit demselben Schlüssel signiert werden, sonst lässt sie sich nicht über die installierte App
+installieren. Der Schlüssel liegt lokal in `signing/` (nicht im Repository!). Die vier Werte aus `signing/GITHUB-SECRETS.txt`
+werden einmalig als *Actions-Secrets* im GitHub-Repo hinterlegt (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+`ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`). Der Workflow baut die Release-APK dann automatisch damit. Den Ordner `signing/`
+zusätzlich sicher sichern – ohne ihn sind keine Updates mehr möglich.

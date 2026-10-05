@@ -49,3 +49,9 @@ app.*.map.json
 
 # Claude Code (lokal)
 .claude/
+
+# Signierschlüssel (geheim!)
+signing/
+android/key.properties
+*.p12
+*.jks

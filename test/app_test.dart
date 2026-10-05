@@ -5,6 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'package:zeiterfassung/core/api.dart';
+import 'package:zeiterfassung/core/app_update.dart';
 import 'package:zeiterfassung/core/format.dart';
 import 'package:zeiterfassung/core/session.dart';
 import 'package:zeiterfassung/main.dart';
@@ -151,6 +152,7 @@ Future<(Session, FakeApi)> _startApp(WidgetTester tester, List<String> perms, {b
 }
 
 void main() {
+  updateTests();
   group('Fmt', () {
     test('Stunden formatieren', () {
       expect(Fmt.hm(3600), '1:00');
@@ -224,5 +226,26 @@ void main() {
     await tester.tap(find.text('Eintragen'));
     await tester.pumpAndSettle();
     expect(fake.calls, contains('POST entries/manual'));
+  });
+}
+
+void updateTests() {
+  group('App-Update', () {
+    test('Versionsvergleich', () {
+      expect(compareVersions('1.0.0', '1.0.1'), lessThan(0));
+      expect(compareVersions('1.10.0', '1.9.0'), greaterThan(0));
+      expect(compareVersions('1.0.0+5', '1.0.0'), 0);
+    });
+    test('Hinweis nur bei neuerer Version', () {
+      final info = {'app_update': {'latest': '1.2.0', 'min': '', 'android_url': 'https://a/apk', 'ios_url': 'https://i'}};
+      expect(appUpdateFrom(info, '1.2.0', android: true), isNull);
+      final u = appUpdateFrom(info, '1.1.0', android: true)!;
+      expect(u.url, 'https://a/apk');
+      expect(u.required, isFalse);
+      expect(appUpdateFrom(info, '1.1.0', android: false)!.url, 'https://i');
+      final req = {'app_update': {'latest': '1.2.0', 'min': '1.1.5', 'android_url': '', 'ios_url': ''}};
+      expect(appUpdateFrom(req, '1.1.0', android: true)!.required, isTrue);
+      expect(appUpdateFrom({'app_update': {'latest': '', 'min': '', 'android_url': '', 'ios_url': ''}}, '1.0.0'), isNull);
+    });
   });
 }

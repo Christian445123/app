@@ -73,3 +73,26 @@ lib/ui        Theme, Menü (nach Rechten), Formular-Sheets, Lade-Hilfen
 lib/screens   ein Bildschirm je Bereich
 test          Oberflächen-Tests (simulierte API) und Integrationstest (echter Server)
 ```
+
+## Installation auf dem Handy
+
+**Android (Samsung & Co.)**
+1. Im GitHub-Repo unter *Releases* (bzw. *Actions → Artefakte*) die Datei `app-release.apk` herunterladen – am Handy im Browser.
+2. Antippen → beim ersten Mal „Installation aus dieser Quelle zulassen“ bestätigen → *Installieren*.
+3. App „Zeiterfassung“ öffnen, Server-Adresse prüfen, mit Personalnummer anmelden.
+
+**iPhone**
+Apple erlaubt keine Installation von Dateien. Weg: Apple-Developer-Account (99 USD/Jahr) → App in *TestFlight* hochladen
+(`flutter build ipa`, Upload mit Xcode/Transporter) → Mitarbeiter bekommen einen Einladungslink, installieren *TestFlight*
+und darüber die App. Updates kommen dort automatisch.
+
+## Updates der App
+
+* Neue Version: `version:` in `pubspec.yaml` erhöhen, committen, Tag setzen (`git tag v1.1.0 && git push --tags`) – der
+  Workflow baut APK/AAB/iOS und legt die APK als GitHub-Release ab.
+* Danach in der `.env` des **Webpanels** `APP_LATEST_VERSION=1.1.0` und `APP_ANDROID_URL=<Link zur APK>`
+  (bzw. `APP_IOS_URL=<TestFlight-Link>`) eintragen. Die App zeigt auf der Übersicht „Neue App-Version verfügbar“; Antippen
+  öffnet den Download. `APP_MIN_VERSION` markiert ältere Versionen als „Update erforderlich“.
+* Android: Die neue APK muss mit **demselben Schlüssel** signiert sein wie die installierte, sonst lässt sie sich nicht
+  darüber installieren – den Release-Schlüssel (Keystore) deshalb sicher aufbewahren und von Anfang an verwenden
+  (siehe „Bauen“). iPhone-Updates laufen über TestFlight/App Store.

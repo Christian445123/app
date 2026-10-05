@@ -8,6 +8,7 @@ import '../ui/nav.dart';
 import '../ui/theme.dart';
 import '../ui/widgets.dart';
 import 'entry_form.dart';
+import 'update_banner.dart';
 
 /// Startseite: Plus-/Minusstunden, Urlaub, Stunden eintragen, nächste Schichten, letzte Einträge (nur eigene Daten).
 class OverviewScreen extends StatefulWidget {
@@ -66,6 +67,7 @@ class _OverviewBody extends StatelessWidget {
     final tracks = s.tracksTime;
 
     return ListView(padding: const EdgeInsets.all(16), children: [
+      const UpdateBanner(),
       if (!tracks)
         const Card(
           child: Padding(
